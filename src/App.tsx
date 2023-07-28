@@ -59,7 +59,7 @@ function App() {
         createRoutesFromElements (
         <Route path="/" element={ <Root /> }>
             <Route index element={ <Home /> } />
-            <Route path="all" element={ <Notes /> } />
+            <Route path="all" element={ <Notes notes={taggedNotes}  availableTags={tags}/> } />
             <Route path="new" element={ <New onSubmit={onCreateNote} onAddTag={addTag} availableTags={tags}/>  }/>
             <Route path="*" element={ <h1>Error 404</h1> } />
             <Route path="/:id">
