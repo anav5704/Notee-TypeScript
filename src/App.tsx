@@ -5,6 +5,7 @@ import { v4 as uuidV4 } from "uuid"
 import Root from "./layouts/root"
 import Home from "./pages/Home"
 import New from "./pages/New"
+import Notes from "./pages/Notes";
 
 export type Note = {
     id: string
@@ -58,6 +59,7 @@ function App() {
         createRoutesFromElements (
         <Route path="/" element={ <Root /> }>
             <Route index element={ <Home /> } />
+            <Route path="all" element={ <Notes /> } />
             <Route path="new" element={ <New onSubmit={onCreateNote} onAddTag={addTag} availableTags={tags}/>  }/>
             <Route path="*" element={ <h1>Error 404</h1> } />
             <Route path="/:id">
