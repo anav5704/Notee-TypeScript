@@ -6,6 +6,9 @@ import Root from "./layouts/root"
 import Home from "./pages/Home"
 import New from "./pages/New"
 import Notes from "./pages/Notes";
+import NoteLayout from "./layouts/NoteLayout";
+import NotePage from "./pages/NotePage";
+import Edit from "./pages/Edit";
 
 export type Note = {
     id: string
@@ -51,6 +54,18 @@ function App() {
         })
     }
 
+    function onUpdateNote(id:string,{tags, ...data}: NoteData ) {
+        setNotes(prevNotes => {
+            return prevNotes.map(note => {
+                if (note.id === id ){
+                    return {...note, ...data, tagids: tags.map(tag => tag.id)}
+                }else{
+                    return note
+                }
+            })
+        })
+    }
+
     function addTag (tag: Tag){
         setTags(prev => [...prev, tag])
     }
@@ -62,9 +77,9 @@ function App() {
             <Route path="all" element={ <Notes notes={taggedNotes}  availableTags={tags}/> } />
             <Route path="new" element={ <New onSubmit={onCreateNote} onAddTag={addTag} availableTags={tags}/>  }/>
             <Route path="*" element={ <h1>Error 404</h1> } />
-            <Route path="/:id">
-                <Route index element={ <h1>Note</h1> } />
-                <Route path="edit" element={ <h1>Edit Note</h1> } />
+            <Route path="/:id" element={<NoteLayout notes={taggedNotes}/>}>
+                <Route index element={<NotePage />} />
+                <Route path="edit" element={ <Edit onSubmit={onUpdateNote} onAddTag={addTag} availableTags={tags}/> } />
             </Route>
         </Route>
         )

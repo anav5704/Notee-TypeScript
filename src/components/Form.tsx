@@ -8,13 +8,13 @@ type NoteProps = {
     onSubmit: (data: NoteData) => void
     onAddTag: (tag: Tag) => void
     availableTags: Tag[]
-}
+} & Partial<NoteData>
 
-function Form({ onSubmit, onAddTag, availableTags }: NoteProps ) {
+function Form({ onSubmit, onAddTag, availableTags, title="", content="", tags=[] }: NoteProps ) {
 
     const titleRef = useRef<HTMLInputElement>(null)
     const contentRef = useRef<HTMLTextAreaElement>(null)
-    const [tags, setTags] = useState<Tag[]>([])
+    const [selecedTags, setSelectedTags] = useState<Tag[]>(tags)
     const navigate = useNavigate()
 
     function handlesubmit(e: FormEvent){
@@ -22,7 +22,7 @@ function Form({ onSubmit, onAddTag, availableTags }: NoteProps ) {
         onSubmit({
             title: titleRef.current!.value, 
             content: contentRef.current!.value,
-            tags: tags,
+            tags: availableTags,
         })
         navigate("..")
     }
@@ -30,24 +30,24 @@ function Form({ onSubmit, onAddTag, availableTags }: NoteProps ) {
     return (
         <form action="submit" onSubmit={handlesubmit}>
             <div className="grid grid-cols-4 w-full gap-5 my-5" id="new" >
-                <input  ref={titleRef} className="w-full col-span-2" type="text" placeholder="Title" name="title" itemID="title"/>
+                <input defaultValue={title}  ref={titleRef} className="w-full col-span-2" type="text" placeholder="Title" name="title" itemID="title"/>
                 <CreatebleReactSelect 
-                value={tags.map(tag => {
+                value={selecedTags.map(tag => {
                     return {label: tag.label, value: tag.id}
                 })}
                 onChange={tags => {
-                    setTags(tags.map(tag => {
+                    setSelectedTags(tags.map(tag => {
                         return {label: tag.label, id: tag.value}
                     }))
                 }}
                 onCreateOption={label => {
                     const newTag = {id: uuidV4(), label}
                     onAddTag(newTag)
-                    setTags(prev => [...prev, newTag])
+                    setSelectedTags(prev => [...prev, newTag])
                 }}
                 options={availableTags.map(tag => {return {label: tag.label, value:tag.id}})}
                 isMulti className="w-full col-span-2"/>
-                <textarea ref={contentRef} className="w-full col-span-4" name="md" id="md" rows={10}></textarea>
+                <textarea defaultValue={content} ref={contentRef} className="w-full col-span-4" name="md" id="md" rows={10}></textarea>
             </div>
             <div className="flex justify-end gap-5">
                 <Link to="..">
